@@ -48,6 +48,7 @@ const Todo = ({editTask, id, completed, toggleTaskCompleted, name, deleteTask}) 
         <>
             <ListItemIcon >
                 <Checkbox
+                    edge='start'
                     id={id}
                     checked={completed}
                     onChange={() => toggleTaskCompleted(id)}
@@ -57,22 +58,21 @@ const Todo = ({editTask, id, completed, toggleTaskCompleted, name, deleteTask}) 
                 htmlFor={id}
                 primary={name}
             />
-            <ListItemSecondaryAction>
-                <IconButton type="button" onClick={() => setEditing(true)}>
-                    <EditIcon />
-                </IconButton>
-                <IconButton
-                    type="button"
-                    onClick={() => deleteTask(id)}
-                >
-                    <DeleteIcon />
-                </IconButton>
-            </ListItemSecondaryAction>
+            <IconButton type="button" onClick={() => setEditing(true)}>
+                <EditIcon />
+            </IconButton>
+            <IconButton
+                edge="end"
+                type="button"
+                onClick={() => deleteTask(id)}
+            >
+                <DeleteIcon />
+            </IconButton>
         </>
     );
     
     return (
-            <ListItem  role={undefined} dense button >
+            <ListItem  alignItems="flex-start">
                 {isEditing ? editingTemplate : viewTemplate}
             </ListItem>
     )

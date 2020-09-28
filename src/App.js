@@ -138,7 +138,6 @@ const App = (props) => {
         </Toolbar>
       </AppBar>
       <Container maxWidth="sm" className={classes.cBox}>
-        {/* <button onClick={updateTodoList}>追加する</button> */}
         <Form addTask={addTask}/>
         <List>
           {taskList}
