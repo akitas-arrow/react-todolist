@@ -1,29 +1,29 @@
 import React,{ useState, useEffect } from 'react';
+import { makeStyles } from '@material-ui/core/styles'
 import { nanoid } from "nanoid";
 import FilterButton from './components/FilterButton';
 import Form from './components/Form';
 import Todo from './components/Todo';
-import { makeStyles } from '@material-ui/core/styles'
-
+import Fab from '@material-ui/core/Fab';
+import AddIcon from '@material-ui/icons/Add';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-
-import CssBaseline from '@material-ui/core/CssBaseline';
+import Select from '@material-ui/core/Select';
 import Container from '@material-ui/core/Container';
+import Box from '@material-ui/core/Box';
 import List from '@material-ui/core/List';
 
 import {db} from './firebase/index'
 
 const useStyles = makeStyles((theme) => ({
-  toolbar: {
-    display: 'flex',
-    justifyContent:'space-between'
+  title: {
+    flexGrow: 1,
   },
-  cBox: {
-    paddingTop:24,
-    marginTop: 80, 
-    // backgroundColor: "pink",
-  }
+  fab: {
+    position: 'absolute',
+    bottom: theme.spacing(2),
+    right: theme.spacing(2),
+  },
 }));
 
 const App = (props) => {
@@ -32,6 +32,7 @@ const App = (props) => {
   const [filter, setFilter] = useState('All');
   const [isLoading, setIsLoading] = useState(true);
   const [isChangedTodo, setIsChangedTodo] = useState(false);
+  const [open, setOpen] = useState(false)
 
   useEffect(() => {
     (async () => {
@@ -60,6 +61,14 @@ const App = (props) => {
   };
 
   const FILTER_NAMES = Object.keys(FILTER_MAP);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   // タスクを追加する
   const addTask = (name) => {
@@ -98,9 +107,9 @@ const App = (props) => {
           return {...task, name: newName}
         }
         return task;
-      });
-      setTasks(editedTaskList);
-      setIsChangedTodo(true);
+    });
+    setTasks(editedTaskList);
+    setIsChangedTodo(true);
   }
 
   // Todoコンポーネントにしてリスト化する
@@ -128,21 +137,25 @@ const App = (props) => {
 
   return (
     <>
-      <CssBaseline />
       <AppBar>
-        <Toolbar className={classes.toolbar}> 
-          <h1>My ToDo</h1>
-            <select onChange={e => setFilter(e.target.value)}>
+        <Toolbar> 
+          <h1 className={classes.title}>My ToDo</h1>
+            <Select native onChange={e => setFilter(e.target.value)}>
               {filterList}
-            </select>
+            </Select>
         </Toolbar>
       </AppBar>
-      <Container maxWidth="sm" className={classes.cBox}>
-        <Form addTask={addTask}/>
-        <List>
-          {taskList}
-        </List>
+      <Form addTask={addTask} handleClose={handleClose} open={open}/>
+      <Container maxWidth="sm">
+        <Box component='div' mx={0} mt={12}>
+          <List>
+            {taskList}
+          </List>
+        </Box>
       </Container>
+      <Fab color="primary" aria-label="add" className={classes.fab} onClick={handleClickOpen}>
+        <AddIcon />
+      </Fab>
     </>
   );
 }

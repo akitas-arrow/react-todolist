@@ -1,5 +1,5 @@
 import React,{ useState } from 'react'
-
+import { makeStyles } from '@material-ui/core/styles';
 import ListItem from '@material-ui/core/ListItem';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
@@ -13,7 +13,15 @@ import IconButton from '@material-ui/core/IconButton';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 
+const useStyles = makeStyles((theme) => ({
+    li: {
+        paddingLeft: 0,
+        paddingRight: 0,
+    },
+  }));
+
 const Todo = ({editTask, id, completed, toggleTaskCompleted, name, deleteTask}) => {
+    const classes = useStyles();
     const [ isEditing, setEditing ] = useState(false);
     const [newName, setNewName] = useState('');
 
@@ -72,7 +80,7 @@ const Todo = ({editTask, id, completed, toggleTaskCompleted, name, deleteTask}) 
     );
     
     return (
-            <ListItem  alignItems="flex-start">
+            <ListItem  className={classes.li}>
                 {isEditing ? editingTemplate : viewTemplate}
             </ListItem>
     )

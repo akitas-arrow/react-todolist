@@ -1,48 +1,63 @@
 import React,{ useState } from 'react'
-import { makeStyles } from '@material-ui/core/styles';
-
+import Dialog from '@material-ui/core/Dialog';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogContent from '@material-ui/core/DialogContent';
 import TextField from '@material-ui/core/TextField';
+import DialogActions from '@material-ui/core/DialogActions';
 import Button from '@material-ui/core/Button';
 
-const useStyles = makeStyles((theme) => ({
-    form: {
-        display: 'flex',
-    },
-    input: {
-        flex: 1,
-    },
-    btn: {
-        marginLeft: 16
-    }
-}));
-
-const Form = ({addTask}) => {
-    const classes = useStyles();
+const Form = ({addTask, handleClose, open}) => {
     const [name, setName] = useState("")
 
     const handleSubmit = (e) => {
         e.preventDefault()
         addTask(name);
         setName('')
+        handleClose()
     }
 
     const handleChange = (e) => {
         setName(e.target.value)
     }
 
+    const handleClickClose = () => {
+        handleClose()
+        setName('')
+    }
+
     return (
-        <form onSubmit={handleSubmit} className={classes.form}>
-            <TextField className={classes.input}
-                underlinestyle={{display: 'none'}}
-                type="text"
-                value={name}
-                onChange={handleChange}
-                required={true}
-            />
-            <Button variant="contained" color="primary" type="submit" className={classes.btn}>
-                追加
-            </Button>
-        </form>
+        <Dialog
+            maxWidth="sm"
+            fullWidth={true}
+            component='form'
+            open={open}
+            onClose={handleClose}
+        >
+            <DialogTitle>新しいタスクを作成しよう！</DialogTitle>
+            <DialogContent>
+                <TextField
+                    type="text"
+                    value={name}
+                    onChange={handleChange}
+                    required={true}
+                    fullWidth
+                    id="outlined-basic"
+                    label="タスクを入力してください"
+                    variant="outlined" 
+                />
+            </DialogContent>
+            <DialogActions>
+                <Button onClick={handleClickClose} color="primary">
+                    キャンセル
+                </Button>
+                <Button
+                    color="primary"
+                    type="submit"
+                    onClick={handleSubmit}>
+                    作成
+                </Button>
+            </DialogActions>
+        </Dialog>
     )
 }
 
