@@ -12,7 +12,6 @@ import Select from '@material-ui/core/Select';
 import Container from '@material-ui/core/Container';
 import Box from '@material-ui/core/Box';
 import List from '@material-ui/core/List';
-
 import {db} from './firebase/index'
 
 const useStyles = makeStyles((theme) => ({
@@ -20,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
   },
   fab: {
-    position: 'absolute',
+    position: 'fixed',
     bottom: theme.spacing(2),
     right: theme.spacing(2),
   },
@@ -30,10 +29,10 @@ const App = (props) => {
   const classes = useStyles();
   const [tasks, setTasks] = useState([])
   const [filter, setFilter] = useState('All');
-  const [isLoading, setIsLoading] = useState(true);
   const [isChangedTodo, setIsChangedTodo] = useState(false);
   const [open, setOpen] = useState(false)
-
+  let [isLoading, setIsLoading] = useState(true);
+  
   useEffect(() => {
     (async () => {
       const resTodo = await db.collection("todoList").doc("todos").get();
