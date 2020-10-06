@@ -1,4 +1,4 @@
-import React,{ useState, useEffect } from 'react';
+import React,{ useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles'
 import { nanoid } from "nanoid";
 import FilterButton from './components/FilterButton';
@@ -12,7 +12,7 @@ import Select from '@material-ui/core/Select';
 import Container from '@material-ui/core/Container';
 import Box from '@material-ui/core/Box';
 import List from '@material-ui/core/List';
-import {db} from './firebase/index'
+// import {db} from './firebase/index'
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -29,28 +29,7 @@ const App = (props) => {
   const classes = useStyles();
   const [tasks, setTasks] = useState([])
   const [filter, setFilter] = useState('All');
-  const [isChangedTodo, setIsChangedTodo] = useState(false);
   const [open, setOpen] = useState(false)
-  let [isLoading, setIsLoading] = useState(true);
-  
-  useEffect(() => {
-    (async () => {
-      const resTodo = await db.collection("todoList").doc("todos").get();
-      setTasks(resTodo.data().tasks);
-      setIsLoading(false);
-    })()
-  }, [db])
-
-  useEffect(() => {
-    if (isChangedTodo) {
-      (async () => {
-        setIsLoading(true)
-        const docRef = await db.collection('todoList').doc('todos');
-        docRef.update({ tasks: tasks })
-        setIsLoading(false)
-      })()
-    }
-  }, [tasks, isChangedTodo, db])
 
   // フィルターのデータを入れたオブジェクトを作る
   const FILTER_MAP = {
@@ -72,8 +51,7 @@ const App = (props) => {
   // タスクを追加する
   const addTask = (name) => {
     const newTask = { id: "todo-" + nanoid(), name: name, completed: false };
-    setTasks([...tasks, newTask]);
-    setIsChangedTodo(true);
+    setTasks([...tasks, newTask]); 
   }
 
   // タスクを完了する
@@ -88,14 +66,12 @@ const App = (props) => {
       return task;
     });
     setTasks(updatedTasks);
-    setIsChangedTodo(true);
   }
 
   // タスクを削除する
   const deleteTask = (id) => {
     const remainingTasks = tasks.filter(task => id !== task.id);
     setTasks(remainingTasks);
-    setIsChangedTodo(true);
   }
 
   // タスクを編集する
@@ -108,7 +84,6 @@ const App = (props) => {
         return task;
     });
     setTasks(editedTaskList);
-    setIsChangedTodo(true);
   }
 
   // Todoコンポーネントにしてリスト化する
