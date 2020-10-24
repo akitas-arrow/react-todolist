@@ -1,4 +1,4 @@
-import React,{ useState } from 'react';
+import React,{ useState,useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles'
 import { nanoid } from "nanoid";
 import FilterButton from './components/FilterButton';
@@ -12,7 +12,7 @@ import Select from '@material-ui/core/Select';
 import Container from '@material-ui/core/Container';
 import Box from '@material-ui/core/Box';
 import List from '@material-ui/core/List';
-// import {db} from './firebase/index'
+import {db} from './firebase/index'
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -30,6 +30,21 @@ const App = (props) => {
   const [tasks, setTasks] = useState([])
   const [filter, setFilter] = useState('All');
   const [open, setOpen] = useState(false)
+
+  useEffect (() => {
+    const observer = db.collection('todoList').onSnapshot(querySnapshot => {
+      const _tasks = querySnapshot.docs.map(doc => {
+        return {
+          id: doc.id,
+          ...doc.data()
+        }
+      });
+      setTasks(_tasks)
+    });
+    return () => {
+      observer();
+    };
+  },[]);
 
   // フィルターのデータを入れたオブジェクトを作る
   const FILTER_MAP = {
@@ -49,41 +64,69 @@ const App = (props) => {
   };
 
   // タスクを追加する
-  const addTask = (name) => {
-    const newTask = { id: "todo-" + nanoid(), name: name, completed: false };
-    setTasks([...tasks, newTask]); 
+  const addTask = async (name) => {
+    // const newTask = { id: "todo-" + nanoid(), name: name, completed: false };
+    const data = { name: name, completed: false };
+    await db.collection('todoList').doc(nanoid()).set(data)
+    // const snapshot = await db.collection('todoList').get();
+    // const newTasks = [];
+    // snapshot.forEach(doc => {
+    //   newTasks.push({
+    //     id: doc.id,
+    //     ...doc.data()
+    //   })
+    // })
+    // setTasks(newTasks); 
   }
 
   // タスクを完了する
   const toggleTaskCompleted = (id) => {
-    const updatedTasks = tasks.map(task => {
+    // const updatedTasks = tasks.map(task => {
+    //   // このタスクが編集されたタスクと同じIDを持っている場合
+    //   if (id === task.id) {
+    //     // スプレッドを使って新しいオブジェクトを作る
+    //     // completedが反転される
+    //     // return {...task, completed: !task.completed}
+    //     db.collection('todoList').doc(id).update({ completed: !task.completed})
+    //   }
+    tasks.map(task => {
       // このタスクが編集されたタスクと同じIDを持っている場合
       if (id === task.id) {
         // スプレッドを使って新しいオブジェクトを作る
         // completedが反転される
-        return {...task, completed: !task.completed}
+        // return {...task, completed: !task.completed}
+        db.collection('todoList').doc(id).update({ completed: !task.completed })
       }
       return task;
     });
-    setTasks(updatedTasks);
+    // setTasks(updatedTasks);
   }
 
   // タスクを削除する
   const deleteTask = (id) => {
-    const remainingTasks = tasks.filter(task => id !== task.id);
-    setTasks(remainingTasks);
+    // const remainingTasks = tasks.filter(task => id !== task.id);
+    // setTasks(remainingTasks);
+    tasks.map(task => {
+      if (id === task.id) {
+        db.collection('todoList').doc(id).delete();
+      }
+      return task;
+    })
   }
 
   // タスクを編集する
   const editTask = (id, newName) => {
-    const editedTaskList = tasks.map(task => {
+    tasks.map(task => {
       // このタスクが編集されたタスクと同じIDを持っている場合
         if (id === task.id) {
-          return {...task, name: newName}
+          // return {...task, name: newName}
+          db.collection('todoList').doc(id).update({
+            name: newName
+          })
         }
         return task;
     });
-    setTasks(editedTaskList);
+    // setTasks(editedTaskList);
   }
 
   // Todoコンポーネントにしてリスト化する
