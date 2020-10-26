@@ -1,6 +1,5 @@
 import React,{ useState,useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles'
-import { nanoid } from "nanoid";
 import FilterButton from './components/FilterButton';
 import Form from './components/Form';
 import Todo from './components/Todo';
@@ -32,7 +31,7 @@ const App = (props) => {
   const [open, setOpen] = useState(false)
 
   useEffect (() => {
-    const observer = db.collection('todoList').onSnapshot(querySnapshot => {
+    const observer = db.collection('todoList').orderBy('createAt').onSnapshot(querySnapshot => {
       const _tasks = querySnapshot.docs.map(doc => {
         return {
           id: doc.id,
@@ -65,47 +64,22 @@ const App = (props) => {
 
   // タスクを追加する
   const addTask = async (name) => {
-    // const newTask = { id: "todo-" + nanoid(), name: name, completed: false };
-    const data = { name: name, completed: false };
-    await db.collection('todoList').doc(nanoid()).set(data)
-    // const snapshot = await db.collection('todoList').get();
-    // const newTasks = [];
-    // snapshot.forEach(doc => {
-    //   newTasks.push({
-    //     id: doc.id,
-    //     ...doc.data()
-    //   })
-    // })
-    // setTasks(newTasks); 
+    const data = { name: name, completed: false, createAt: new Date()};
+    await db.collection('todoList').add(data)
   }
 
   // タスクを完了する
   const toggleTaskCompleted = (id) => {
-    // const updatedTasks = tasks.map(task => {
-    //   // このタスクが編集されたタスクと同じIDを持っている場合
-    //   if (id === task.id) {
-    //     // スプレッドを使って新しいオブジェクトを作る
-    //     // completedが反転される
-    //     // return {...task, completed: !task.completed}
-    //     db.collection('todoList').doc(id).update({ completed: !task.completed})
-    //   }
     tasks.map(task => {
-      // このタスクが編集されたタスクと同じIDを持っている場合
       if (id === task.id) {
-        // スプレッドを使って新しいオブジェクトを作る
-        // completedが反転される
-        // return {...task, completed: !task.completed}
         db.collection('todoList').doc(id).update({ completed: !task.completed })
       }
       return task;
     });
-    // setTasks(updatedTasks);
   }
 
   // タスクを削除する
   const deleteTask = (id) => {
-    // const remainingTasks = tasks.filter(task => id !== task.id);
-    // setTasks(remainingTasks);
     tasks.map(task => {
       if (id === task.id) {
         db.collection('todoList').doc(id).delete();
@@ -117,16 +91,13 @@ const App = (props) => {
   // タスクを編集する
   const editTask = (id, newName) => {
     tasks.map(task => {
-      // このタスクが編集されたタスクと同じIDを持っている場合
         if (id === task.id) {
-          // return {...task, name: newName}
           db.collection('todoList').doc(id).update({
             name: newName
           })
         }
         return task;
     });
-    // setTasks(editedTaskList);
   }
 
   // Todoコンポーネントにしてリスト化する
