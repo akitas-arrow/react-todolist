@@ -6,7 +6,7 @@ import TextField from '@material-ui/core/TextField';
 import DialogActions from '@material-ui/core/DialogActions';
 import Button from '@material-ui/core/Button';
 
-const EditForm  = ({open, handleChange, handleSubmit, handleClose}) => {
+const EditForm  = ({name, open, handleChange, handleSubmit, handleClose}) => {
     return (
         <Dialog
             maxWidth="sm"
@@ -23,7 +23,7 @@ const EditForm  = ({open, handleChange, handleSubmit, handleClose}) => {
                     required={true}
                     fullWidth
                     id="outlined-basic"
-                    label="タスクを入力してください"
+                    label={name}
                     variant="outlined" 
                 />
             </DialogContent>

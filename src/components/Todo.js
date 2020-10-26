@@ -67,6 +67,7 @@ const Todo = ({editTask, id, completed, toggleTaskCompleted, name, deleteTask}) 
                 </IconButton>
             </ListItem>
             <EditForm
+                name={name}
                 open={isEditing}
                 handleChange={handleChange}
                 handleSubmit={handleSubmit}
