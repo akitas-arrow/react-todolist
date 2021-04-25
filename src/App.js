@@ -63,9 +63,9 @@ const App = (props) => {
   };
 
   // タスクを追加する
-  const addTask = async (name) => {
+  const addTask = (name) => {
     const data = { name: name, completed: false, createAt: new Date()};
-    await db.collection('todoList').add(data)
+    db.collection('todoList').add(data)
   }
 
   // タスクを完了する
