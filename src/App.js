@@ -22,6 +22,10 @@ const useStyles = makeStyles((theme) => ({
     bottom: theme.spacing(2),
     right: theme.spacing(2),
   },
+  select: {
+    backgroundColor: 'white',
+    padding: '8px'
+  }
 }));
 
 const App = (props) => {
@@ -49,7 +53,7 @@ const App = (props) => {
   const FILTER_MAP = {
     All: () => true,
     Active: task => !task.completed,
-    Completed: task => task.completed
+    Completed: task => task.completed,
   };
 
   const FILTER_NAMES = Object.keys(FILTER_MAP);
@@ -122,13 +126,12 @@ const App = (props) => {
     />
   ));
   
-
   return (
     <>
       <AppBar>
-        <Toolbar> 
+        <Toolbar>
           <h1 className={classes.title}>My ToDo</h1>
-            <Select native onChange={e => setFilter(e.target.value)}>
+            <Select native onChange={e => setFilter(e.target.value)} className={classes.select}>
               {filterList}
             </Select>
         </Toolbar>
