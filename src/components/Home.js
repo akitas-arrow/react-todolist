@@ -1,4 +1,5 @@
-import React,{ useState,useEffect } from 'react';
+import React,{ useState, useEffect, useContext } from 'react';
+import { AuthContext } from '../auth/AuthProvider'
 import { makeStyles } from '@material-ui/core/styles'
 import FilterButton from './FilterButton';
 import Form from './Form';
@@ -11,7 +12,7 @@ import Select from '@material-ui/core/Select';
 import Container from '@material-ui/core/Container';
 import Box from '@material-ui/core/Box';
 import List from '@material-ui/core/List';
-import {db} from '../firebase/index'
+import {db, auth} from '../firebase/index'
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -33,9 +34,10 @@ const Home = (props) => {
   const [tasks, setTasks] = useState([])
   const [filter, setFilter] = useState('All');
   const [open, setOpen] = useState(false)
+  const { currentUser } = useContext(AuthContext)
 
   useEffect (() => {
-    const observer = db.collection('todoList').orderBy('createAt').onSnapshot(querySnapshot => {
+    const observer = db.collection('todoList').where("userId", "==", currentUser.uid).onSnapshot(querySnapshot => {
       const _tasks = querySnapshot.docs.map(doc => {
         return {
           id: doc.id,
@@ -47,7 +49,7 @@ const Home = (props) => {
     return () => {
       observer();
     };
-  },[]);
+  },[currentUser.uid]);
 
   // フィルターのデータを入れたオブジェクトを作る
   const FILTER_MAP = {
@@ -67,8 +69,9 @@ const Home = (props) => {
   };
 
   // タスクを追加する
-  const addTask = (name) => {
-    const data = { name: name, completed: false, createAt: new Date()};
+  const addTask = (name, uid) => {
+    const data = { name: name,
+      userId: uid, completed: false, createAt: new Date()};
     db.collection('todoList').add(data)
   }
 
@@ -125,12 +128,13 @@ const Home = (props) => {
       name={name}
     />
   ));
-  
+
   return (
     <>
       <AppBar>
         <Toolbar>
           <h1 className={classes.title}>My ToDo</h1>
+          <button onClick={() => auth.signOut()}>ログアウト</button>
             <Select native onChange={e => setFilter(e.target.value)} className={classes.select}>
               {filterList}
             </Select>

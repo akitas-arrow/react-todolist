@@ -1,4 +1,5 @@
 import React,{ useContext } from 'react'
+import {Link} from 'react-router-dom'
 import { withRouter } from 'react-router' //handleで遷移させる時に使用する
 import { AuthContext } from './AuthProvider'
 
@@ -24,6 +25,7 @@ const Signup = ({history}) => {
         </label>
         <button type="submit">Sign up</button>
       </form>
+      <Link to="/login">ログイン</Link>
     </div>
   )
 }

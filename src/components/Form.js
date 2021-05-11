@@ -1,4 +1,5 @@
-import React,{ useState } from 'react'
+import React,{ useState, useContext } from 'react'
+import { AuthContext } from '../auth/AuthProvider'
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -8,6 +9,7 @@ import Button from '@material-ui/core/Button';
 
 const Form = ({addTask, handleClose, open}) => {
     const [name, setName] = useState('')
+    const { currentUser } = useContext(AuthContext)
 
     const handleSubmit = (e) => {
         if(name === '') {
@@ -15,7 +17,7 @@ const Form = ({addTask, handleClose, open}) => {
             return false
         }else{
             e.preventDefault()
-            addTask(name);
+            addTask(name, currentUser.uid);
             setName('')
             handleClose()
             return true
