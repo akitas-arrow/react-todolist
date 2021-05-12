@@ -1,10 +1,17 @@
 import React from 'react'
+import styled from 'styled-components'
+import {Color} from './shared/style'
 
 const FilterButton = ({name}) => {
 
     return (
-    <option value={name}>{name}</option>
+    <Option value={name}>{name}</Option>
     )
 }
+
+const Option = styled.option`
+    color: ${Color.text};
+    background-color: ${Color.white};
+`
 
 export default FilterButton

@@ -6,27 +6,18 @@ import Form from './Form';
 import Todo from './Todo';
 import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Select from '@material-ui/core/Select';
-import Container from '@material-ui/core/Container';
-import Box from '@material-ui/core/Box';
 import List from '@material-ui/core/List';
 import {db, auth} from '../firebase/index'
+import styled from 'styled-components'
+import { Color } from './shared/style'
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 
 const useStyles = makeStyles((theme) => ({
-  title: {
-    flexGrow: 1,
-  },
   fab: {
     position: 'fixed',
     bottom: theme.spacing(2),
     right: theme.spacing(2),
   },
-  select: {
-    backgroundColor: 'white',
-    padding: '8px'
-  }
 }));
 
 const Home = (props) => {
@@ -131,28 +122,78 @@ const Home = (props) => {
 
   return (
     <>
-      <AppBar>
-        <Toolbar>
-          <h1 className={classes.title}>My ToDo</h1>
-          <button onClick={() => auth.signOut()}>ログアウト</button>
-            <Select native onChange={e => setFilter(e.target.value)} className={classes.select}>
-              {filterList}
-            </Select>
-        </Toolbar>
-      </AppBar>
+      <Header>
+        <select onChange={e => setFilter(e.target.value)} className={classes.select}>
+          {filterList}
+        </select>
+        <LogoutButton onClick={() => auth.signOut()}>
+          <ExitToAppIcon style={{color:'#fff'}} fontSize="large"/>
+          ログアウト
+        </LogoutButton>
+      </Header>
       <Form addTask={addTask} handleClose={handleClose} open={open}/>
       <Container maxWidth="sm">
-        <Box component='div' mx={0} mt={12}>
+          <h1>MY TODO</h1>
           <List>
             {taskList}
           </List>
-        </Box>
       </Container>
-      <Fab color="primary" aria-label="add" className={classes.fab} onClick={handleClickOpen}>
-        <AddIcon />
+      <Fab aria-label="add" className={classes.fab} onClick={handleClickOpen} style={{backgroundColor:'#00bed4'}}>
+        <AddIcon style={{color:'#fff'}}/>
       </Fab>
     </>
   );
 }
+
+const Header = styled.header`
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+  height: 80px;
+  background-color: ${Color.main};
+  position: fixed;
+  top:0;
+  left:0;
+  box-shadow: 0px 2px 4px -1px rgb(0 0 0 / 20%), 
+  0px 4px 5px 0px rgb(0 0 0 / 14%), 
+  0px 1px 10px 0px rgb(0 0 0 / 12%);
+  padding: 16px;
+  select {
+    background: rgba(255,255,255,0.2);
+    border: none;
+    color: ${Color.white};
+    cursor: pointer;
+    border-radius: 4px;
+    &:hover {
+      background-color: rgba(0,0,0,0.1);
+    }
+    &:focus {
+      outline: none;
+    }
+  }
+`
+
+const LogoutButton = styled.div`
+  display: flex;
+  cursor: pointer;
+  color: ${Color.white};
+  align-items: center;
+  padding: 0 8px;
+  border-radius: 4px;
+  margin-left: 16px;
+  &:hover {
+    background-color: rgba(0,0,0,0.1);
+  }
+`
+
+const Container = styled.div`
+  width: 90%;
+  max-width: 700px;
+  margin: 0 auto;
+  padding-top: 120px;
+  h1 {
+    font-size: 24px;
+  }
+`
 
 export default Home;
