@@ -2,10 +2,9 @@ import React,{ useState, useContext } from 'react'
 import { AuthContext } from '../auth/AuthProvider'
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import DialogContent from '@material-ui/core/DialogContent';
-import TextField from '@material-ui/core/TextField';
 import DialogActions from '@material-ui/core/DialogActions';
-import Button from '@material-ui/core/Button';
+import styled from 'styled-components'
+import { Color } from './shared/style'
 
 const Form = ({addTask, handleClose, open}) => {
     const [name, setName] = useState('')
@@ -42,18 +41,12 @@ const Form = ({addTask, handleClose, open}) => {
             onClose={handleClose}
         >
             <DialogTitle>新しいタスクを作成しよう！</DialogTitle>
-            <DialogContent>
-                <TextField
-                    type="text"
-                    value={name}
-                    onChange={handleChange}
-                    required={true}
-                    fullWidth
-                    id="outlined-basic"
-                    label="タスクを入力してください"
-                    variant="outlined" 
+            <InputField>
+                <input
+                    type="text" value={name}
+                    onChange={handleChange} placeholder="タスクを入力してください"
                 />
-            </DialogContent>
+            </InputField>
             <DialogActions>
                 <Button onClick={handleClickClose} color="primary">
                     キャンセル
@@ -69,5 +62,29 @@ const Form = ({addTask, handleClose, open}) => {
         </Dialog>
     )
 }
+
+const InputField = styled.div`
+    padding: 16px;
+    input {
+        width: 100%;
+        border: 2px solid #b3b3b3;
+        border-radius: 5px;
+        outline: none;
+        padding: 4px;
+        &:focus {
+            border-color: ${Color.main};
+        }
+    }
+`
+
+const Button = styled.div`
+    color: ${Color.main};
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 4px;
+    &:hover {
+        background-color: rgba(0,190,212,0.1);
+    }
+`
 
 export default Form
